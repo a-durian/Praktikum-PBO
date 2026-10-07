@@ -1,6 +1,6 @@
 # Tema: Sistem Manajemen Karakter dan Pertarungan Arena MMORPG
 # Dworian Arena
-
+ 
 class Item:
     total_item = 0
     
@@ -28,20 +28,24 @@ class Item:
     def item_starter(nama) -> bool:
         return len(nama.strip()) >= 3
         
+# SUPERCLASS (Parent)
 class Character:
     total_character = 0
     max_level = 15
     game_title = "Dworian Arena"
     
-    def __init__(self, name, role, hp, damage):
+    # AGREGASI: Character memiliki Item (equipment), tapi Item dibuat di luar
+    # Character dan dikirim lewat parameter, jadi Item tetap ada walau Character dihapus
+    def __init__(self, name, role, hp, damage, equipment):
         self.name = name
         self.role = role
         self.level = 1
         self.hp = hp
         self.energy = 100
         self.damage = damage
-        self.equipment = Item("Starter Sword", 0)
+        self.equipment = equipment
     
+    # PRIVATE: __hp hanya untuk superclass, diakses lewat property
     @property
     def hp(self):
         return self.__hp
@@ -53,18 +57,26 @@ class Character:
         else:
             self.__hp = nilai
             
+    # PROTECTED: _damage boleh diakses langsung oleh subclass
     @property
     def damage(self):
-        return self.__damage
+        return self._damage
     
     @damage.setter
     def damage(self, nilai):
             if nilai < 0:
-                self.__damage = 0
+                self._damage = 0
             else:
-                self.__damage = nilai
+                self._damage = nilai
     def get_total_damage(self) -> int:
         return self.damage + self.equipment.bonus_damage
+    
+    # ASOSIASI: Character menggunakan Character lain (target) saat menyerang,
+    # keduanya berdiri sendiri dan tidak saling memiliki
+    def serang(self, target):
+        dmg = self.get_total_damage()
+        target.hp -= dmg
+        print(f"[x] {self.name} menyerang {target.name} (-{dmg} HP). Sisa HP {target.name}: {target.hp}")
     
     def upgrade_level(self):
         if self.level >= self.max_level:
@@ -85,7 +97,32 @@ class Character:
     @staticmethod
     def validasi_nama(nama) -> bool:
         return len(nama.strip()) >= 3
-
+ 
+# SUBCLASS 1 (Child)
+class Fighter(Character):
+    def __init__(self, name, hp, damage, equipment, armor=10):
+        super().__init__(name, "Fighter", hp, damage, equipment)
+        self.armor = armor  # atribut unik Fighter
+    
+    # METHOD OVERRIDING
+    def info(self):
+        super().info()
+        print(f"   Armor: {self.armor}")
+ 
+# SUBCLASS 2 (Child)
+class Mage(Character):
+    def __init__(self, name, hp, damage, equipment, mana=50):
+        super().__init__(name, "Mage", hp, damage, equipment)
+        self.mana = mana  # atribut unik Mage
+    
+    # METHOD OVERRIDING: damage Mage ditambah bonus dari mana
+    def get_total_damage(self) -> int:
+        return self._damage + self.equipment.bonus_damage + (self.mana // 10)
+    
+    def info(self):
+        super().info()
+        print(f"   Mana: {self.mana}")
+ 
 class Arena:
     nama_instansi = "Dworian Battle Arena"
     
@@ -97,11 +134,20 @@ class Arena:
     def daftar_karakter(self):
         return self.__daftar_karakter
     
+    # KOMPOSISI: Arena membuat Character di dalamnya dan menyimpannya di list private,
+    # karakter hanya hidup di dalam Arena (dihapus dari Arena = hilang)
     def create_character(self, name, role, hp, damage):
         if not Character.validasi_nama(name):
             print("[!] Gagal membuat karakter!")
-            
-        karakter_baru = Character(name, role, hp, damage)
+            return
+        
+        item_awal = Item("Starter Sword", 0)
+        if role.lower() == "fighter":
+            karakter_baru = Fighter(name, hp, damage, item_awal)
+        elif role.lower() == "mage":
+            karakter_baru = Mage(name, hp, damage, item_awal)
+        else:
+            karakter_baru = Character(name, role, hp, damage, item_awal)
         self.__daftar_karakter.append(karakter_baru)
         print(f"[+] Karakter {name} ({role}) berhasil dibuat!")
     
@@ -151,7 +197,7 @@ class Arena:
             return
         dihapus = self.__daftar_karakter.pop(index)
         print(f"[^] Karakter '{dihapus.name} berhasil dihapus!")
-
+ 
     @classmethod
     def ubah_instansi(cls, nama_baru):
         cls.nama_instansi = nama_baru
@@ -196,7 +242,7 @@ if __name__ == "__main__":
         
         elif pilihan == "3":
             arena_utama.read_character()
-
+ 
             if arena_utama.daftar_karakter:
                 try:
                    idx = int(input("\nPilih karakter yang mau diupdate: ")) - 1
@@ -218,4 +264,3 @@ if __name__ == "__main__":
             break
         else:
             print("[!] Pilihan tidak valid!")    
-
