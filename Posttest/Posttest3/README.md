@@ -6,7 +6,7 @@ File programnya `dworian_arena.py`, jalanin aja pakai `python dworian_arena.py`.
 
 ## Class Diagram
 
-![Class Diagram](class_diagram.png)
+<img width="1370" height="1065" alt="class_diagram" src="https://github.com/user-attachments/assets/16b71df7-db6c-4bbe-b1b8-dd6d87a4532d" />
 
 Penjelasan relasinya:
 
@@ -48,46 +48,22 @@ Aku juga ngilangin rantai `if role == "fighter"` yang dulu ada di `create_charac
 
 ## Output
 
-(screenshot dari terminal)
-
 Bukti abstract class nggak bisa diinstansiasi:
 
-![bukti abstraksi](screenshots/bukti_abstraksi.png)
-
-```
-=== BUKTI ABSTRAKSI ===
-[OK] Character tidak bisa dibuat langsung -> TypeError: Can't instantiate abstract class Character without an implementation for abstract methods 'get_total_damage', 'skill_spesial'
-```
+<img width="1795" height="90" alt="image" src="https://github.com/user-attachments/assets/7c3d39fe-7369-4673-aca9-9d01a4e46742" />
 
 Menu 5, battle (Drian si Fighter dan eudora si Mage nyerang Layla):
 
-![battle](screenshots/battle.png)
-
-```
-=== SEMUA KARAKTER MENYERANG LAYLA ===
-[x] Drian menyerang Layla (-25 HP). Sisa HP Layla: 175
-   [LOG-KONSOL] [SKILL] Drian (Fighter) Shield Bash ke Layla (-35 HP). Sisa HP: 140
-[x] eudora menyerang Layla (-45 HP). Sisa HP Layla: 95
-   [LOG-KONSOL] [SKILL] eudora (Mage) Fireball ke Layla (-90 HP). Sisa HP: 5
-```
+<img width="933" height="151" alt="image" src="https://github.com/user-attachments/assets/67ef8db9-6d58-4f34-8bdf-20af649cb7b0" />
 
 Hasil skill itu juga ke-catat ke file `riwayat_arena.txt` lewat `FileLog`:
 
-```
-[SKILL] Drian (Fighter) Shield Bash ke Layla (-35 HP). Sisa HP: 140
-[SKILL] eudora (Mage) Fireball ke Layla (-90 HP). Sisa HP: 5
-```
+<img width="871" height="123" alt="image" src="https://github.com/user-attachments/assets/f02ac30b-ef57-433a-91b9-46e742517401" />
 
 Menu 6, ranking damage:
 
-![ranking](screenshots/ranking.png)
+<img width="1198" height="150" alt="image" src="https://github.com/user-attachments/assets/6bb07920-e5d3-4dc3-af09-3ad149c57d28" />
 
-```
-=== RANKING TOTAL DAMAGE ===
-1. eudora (Mage) Lv.1 | Total Dmg: 45
-2. Drian (Fighter) Lv.1 | Total Dmg: 25
-Jumlah karakter di arena: 2
-```
 
 ## SOLIDnya:
 
